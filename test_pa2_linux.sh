@@ -216,12 +216,14 @@ test_builtin_commands()
     input+=$'rmdir d6\nrmdir d7\nrmdir d8\nrmdir d9\nrmdir d10\n'
     input+=$'mkdir rel_cd\ncd rel_cd\npwd\ncd ..\nrmdir rel_cd\n'
     input+="cd $WORK_DIR"$'\npwd\n'
+    input+=$'printenv PWD\n'
     input+=$'cd\npwd\nexit\n'
 
     run_shell_case "builtins" "$input"
 
     assert_promptless_line "$LAST_OUT" "$WORK_DIR" "pwd prints current directory"
     assert_promptless_line "$LAST_OUT" "$WORK_DIR/rel_cd" "cd supports relative paths"
+    assert_promptless_line "$LAST_OUT" "$WORK_DIR" "cd updates PWD for child commands"
     assert_promptless_line "$LAST_OUT" "${HOME:-}" "cd with no argument moves to HOME"
 
     for d in d1 d2 d3 d4 d5 d6 d7 d8 d9 d10 rel_cd; do
